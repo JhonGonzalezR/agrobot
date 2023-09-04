@@ -162,7 +162,7 @@
     </collision>
   </link>
   
-  <gazebo reference="rueda_izq_delantera_link">
+  <gazebo reference="rueda_izq_trasera_link">
     <mu1>200</mu1>
     <mu2>200</mu2>
     <kp>1000000</kp>
