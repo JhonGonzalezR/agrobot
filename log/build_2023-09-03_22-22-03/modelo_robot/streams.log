@@ -1,0 +1,23 @@
+[0.401s] Invoking command in '/home/andres/agrobot/src/modelo_robot': PYTHONPATH=/home/andres/agrobot/build/modelo_robot/prefix_override:/home/andres/agrobot/install/modelo_robot/lib/python3.10/site-packages:${PYTHONPATH} /usr/bin/python3 setup.py egg_info --egg-base ../../build/modelo_robot build --build-base /home/andres/agrobot/build/modelo_robot/build install --record /home/andres/agrobot/build/modelo_robot/install.log --single-version-externally-managed
+[0.556s] running egg_info
+[0.557s] writing ../../build/modelo_robot/modelo_robot.egg-info/PKG-INFO
+[0.557s] writing dependency_links to ../../build/modelo_robot/modelo_robot.egg-info/dependency_links.txt
+[0.557s] writing entry points to ../../build/modelo_robot/modelo_robot.egg-info/entry_points.txt
+[0.557s] writing requirements to ../../build/modelo_robot/modelo_robot.egg-info/requires.txt
+[0.557s] writing top-level names to ../../build/modelo_robot/modelo_robot.egg-info/top_level.txt
+[0.558s] reading manifest file '../../build/modelo_robot/modelo_robot.egg-info/SOURCES.txt'
+[0.559s] writing manifest file '../../build/modelo_robot/modelo_robot.egg-info/SOURCES.txt'
+[0.559s] running build
+[0.559s] running build_py
+[0.559s] running install
+[0.559s] /usr/lib/python3/dist-packages/setuptools/command/install.py:34: SetuptoolsDeprecationWarning: setup.py install is deprecated. Use build and pip and other standards-based tools.
+[0.559s]   warnings.warn(
+[0.559s] running install_lib
+[0.560s] running install_data
+[0.560s] copying urdf/Ensamblaje_carro.urdf -> /home/andres/agrobot/install/modelo_robot/share/modelo_robot/urdf
+[0.560s] running install_egg_info
+[0.561s] removing '/home/andres/agrobot/install/modelo_robot/lib/python3.10/site-packages/modelo_robot-0.0.0-py3.10.egg-info' (and everything under it)
+[0.562s] Copying ../../build/modelo_robot/modelo_robot.egg-info to /home/andres/agrobot/install/modelo_robot/lib/python3.10/site-packages/modelo_robot-0.0.0-py3.10.egg-info
+[0.562s] running install_scripts
+[0.576s] writing list of installed files to '/home/andres/agrobot/build/modelo_robot/install.log'
+[0.593s] Invoked command in '/home/andres/agrobot/src/modelo_robot' returned '0': PYTHONPATH=/home/andres/agrobot/build/modelo_robot/prefix_override:/home/andres/agrobot/install/modelo_robot/lib/python3.10/site-packages:${PYTHONPATH} /usr/bin/python3 setup.py egg_info --egg-base ../../build/modelo_robot build --build-base /home/andres/agrobot/build/modelo_robot/build install --record /home/andres/agrobot/build/modelo_robot/install.log --single-version-externally-managed
