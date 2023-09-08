@@ -33,11 +33,11 @@ def generate_launch_description():
         description='Use simulation (Gazebo) clock if true'
         )
 
-    robot_name_in_model = 'Ensamblaje_carro'
+    robot_name_in_model = 'robot'
 
     # Get URDF via xacro
 
-    urdf_file_name = 'Ensamblaje_carro.urdf'
+    urdf_file_name = 'ensamblaje.urdf'
     urdf = os.path.join(
         get_package_share_directory('modelo_robot'),
         'urdf',
@@ -99,6 +99,7 @@ def generate_launch_description():
      
     return LaunchDescription([
     declare_use_sim_time_cmd,
+    rviz2,
     spawn,
     start_joint_state_publisher_cmd, 
     robot_state_publisher_node,
