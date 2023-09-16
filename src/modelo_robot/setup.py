@@ -15,7 +15,7 @@ setup(
         (os.path.join('share', package_name, 'urdf'), glob('urdf/*')),
         (os.path.join('share', package_name, 'launch'), glob('launch/*.py')),
         (os.path.join('share', package_name, 'meshes'), glob('meshes/*')),
-        (os.path.join('share', package_name, 'meshes'), glob('config/*')),
+        (os.path.join('share', package_name, 'config'), glob('config/*.yaml')),
         (os.path.join('share', package_name, 'meshes'), glob('rviz/*')),
     ],
     install_requires=['setuptools'],

@@ -92,6 +92,18 @@ def generate_launch_description():
         cmd=['gazebo', '--verbose', '-s', 'libgazebo_ros_factory.so', 
         '-s', 'libgazebo_ros_init.so'], output='screen',
         )
+    
+    diff_drive_controller_spawner = Node(
+        package="controller_manager",
+        executable="spawner",
+        arguments=["diff_drive_controller"],
+    )
+
+    joint_state_broadcaster_spawner = Node(
+        package="controller_manager",
+        executable="spawner",
+        arguments=["joint_state_broadcaster"],
+    )
 
      
     return LaunchDescription([
@@ -100,5 +112,7 @@ def generate_launch_description():
     spawn,
     start_joint_state_publisher_cmd, 
     node_robot_state_publisher,
-    gazebo
+    gazebo,
+    diff_drive_controller_spawner,
+    joint_state_broadcaster_spawner
 ])
