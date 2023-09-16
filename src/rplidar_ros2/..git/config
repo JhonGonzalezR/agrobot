@@ -1,0 +1,11 @@
+[core]
+	repositoryformatversion = 0
+	filemode = true
+	bare = false
+	logallrefupdates = true
+[remote "origin"]
+	url = https://github.com/babakhani/rplidar_ros2.git
+	fetch = +refs/heads/*:refs/remotes/origin/*
+[branch "ros2"]
+	remote = origin
+	merge = refs/heads/ros2
