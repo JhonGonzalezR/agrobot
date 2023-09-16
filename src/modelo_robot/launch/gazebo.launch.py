@@ -90,6 +90,18 @@ def generate_launch_description():
                     "-Y", '0.0']
     )
 
+    diff_drive_controller_spawner = Node(
+        package="controller_manager",
+        executable="spawner",
+        arguments=["diff_drive_controller"],
+    )
+
+    joint_state_broadcaster_spawner = Node(
+        package="controller_manager",
+        executable="spawner",
+        arguments=["joint_state_broadcaster"],
+    )
+
 
     gazebo = ExecuteProcess(
         cmd=['gazebo', '--verbose', '-s', 'libgazebo_ros_factory.so', 
@@ -103,5 +115,7 @@ def generate_launch_description():
     spawn,
     start_joint_state_publisher_cmd, 
     robot_state_publisher_node,
-    gazebo
+    gazebo,
+    diff_drive_controller_spawner,
+    joint_state_broadcaster_spawner
 ])
