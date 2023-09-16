@@ -28,7 +28,7 @@
   
   <joint name="lidar_frame" type="fixed">
     <origin xyz="0.031539 -0.0015685 0.17" rpy="0 0 0" />
-    <parent link="chassis" />
+    <parent link="base_link" />
     <child link="lindar_link" />
     <axis xyz="0 0 0" />
   </joint>

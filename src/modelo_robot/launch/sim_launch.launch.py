@@ -53,17 +53,17 @@ def generate_launch_description():
                         output='screen')
 
 
-    # diff_drive_spawner = Node(
-    #     package="controller_manager",
-    #     executable="spawner.py",
-    #     arguments=["diff_cont"],
-    # )
+    diff_drive_controller_spawner = Node(
+        package="controller_manager",
+        executable="spawner",
+        arguments=["diff_drive_controller"],
+    )
 
-    # joint_broad_spawner = Node(
-    #     package="controller_manager",
-    #     executable="spawner.py",
-    #     arguments=["joint_broad"],
-    # )
+    joint_state_broadcaster_spawner = Node(
+        package="controller_manager",
+        executable="spawner",
+        arguments=["joint_state_broadcaster"],
+    )
 
 
     # Code for delaying a node (I haven't tested how effective it is)
@@ -91,6 +91,6 @@ def generate_launch_description():
         #twist_mux,
         gazebo,
         spawn_entity,
-        #diff_drive_spawner,
-        #joint_broad_spawner
+        diff_drive_controller_spawner,
+        joint_state_broadcaster_spawner
     ])
