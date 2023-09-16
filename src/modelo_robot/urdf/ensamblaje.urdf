@@ -428,44 +428,54 @@
 
 
     <!-- Gazebo Plugins -->
-    <gazebo>
-        <plugin name="diff_drive" filename="libgazebo_ros_diff_drive.so">
-            <update_rate>100</update_rate>
-            <num_wheel_pairs>2</num_wheel_pairs>
-            <!-- Wheel Information -->
-            <left_joint>rueda_izq_trasera_joint</left_joint>
-            <left_joint>rueda_izq_delantera_joint</left_joint>
-            <right_joint>rueda_der_trasera_joint</right_joint>
-            <right_joint>rueda_der_delantera_joint</right_joint>
-            <wheel_separation>0.20</wheel_separation>
-            <wheel_radius>0.122</wheel_radius>
+    <ros2_control name="GazeboSystem" type="system">
+        <hardware>
+          <plugin>gazebo_ros2_control/GazeboSystem</plugin>
+        </hardware>
 
-            <!-- Limits -->
-            <max_linear_acceleration>5</max_linear_acceleration>
-            <min_linear_acceleration>-5</min_linear_acceleration>
-            <max_angular_acceleration>4</max_angular_acceleration>
-            <min_angular_acceleration>-4</min_angular_acceleration>
-
-            <!-- Receive velocity commands on this ROS topic -->
-            <command_topic>cmd_vel</command_topic>
-      
-            <!-- output -->
-            <!-- When false, publish no wheel odometry data to a ROS topic -->
-            <publish_odom>true</publish_odom>
-      
-            <!-- When true, publish coordinate transform from odom to base_footprint -->
-            <!-- I usually use the robot_localization package to publish this transform -->  
-            <publish_odom_tf>true</publish_odom_tf>
+        <joint name="rueda_izq_delantera_joint">
+          <command_interface name="velocity">
+            <param name="min">-10 </param>
+            <param name="max">10 </param>
           
-            <!-- When true, publish coordinate transform from base_link to the wheels -->
-            <!-- The robot_state_publisher package is often used to publish this transform -->  
-            <publish_wheel_tf>true</publish_wheel_tf>
-      
-            <odometry_topic>odom</odometry_topic>
-            <odometry_frame>odom_link</odometry_frame>
-            <robot_base_frame>base_link</robot_base_frame>
-        </plugin>
+          </command_interface>
+          <state_interface name="velocity"/>
+          <state_interface name="position"/>
+        </joint>
+
+        <joint name="rueda_der_delantera_joint">
+          <command_interface name="velocity">
+            <param name="min">-10 </param>
+            <param name="max">10 </param>
+          
+          </command_interface>
+          <state_interface name="velocity"/>
+          <state_interface name="position"/>
+        </joint>
+
+        <joint name="rueda_izq_trasera_joint">
+          <command_interface name="velocity">
+            <param name="min">-10 </param>
+            <param name="max">10 </param>
+          
+          </command_interface>
+          <state_interface name="velocity"/>
+          <state_interface name="position"/>
+        </joint>
+        <joint name="rueda_der_trasera_joint">
+          <command_interface name="velocity">
+            <param name="min">-10 </param>
+            <param name="max">10 </param>
+          
+          </command_interface>
+          <state_interface name="velocity"/>
+          <state_interface name="position"/>
+        </joint>
+    </ros2_control>
+
+    <gazebo>
+      <plugin filename="libgazebo_ros2_control.so" name="gazebo_ros2_control">
+        <parameters>/home/jhon/agrobot/src/modelo_robot/config/my_controllers.yaml</parameters>
+      </plugin>
     </gazebo>
-
-
 </robot>
