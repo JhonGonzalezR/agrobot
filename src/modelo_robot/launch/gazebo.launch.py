@@ -14,8 +14,7 @@ from launch.actions import RegisterEventHandler
 from launch.event_handlers import OnProcessExit
   
 def generate_launch_description():
- 
- 
+    # Check if we're told to use sim time
     model_arg = DeclareLaunchArgument(name='model', description='Absolute path to robot urdf file')
     pkg_gazebo_ros = get_package_share_directory('gazebo_ros')
     use_sim_time = LaunchConfiguration('use_sim_time') 
@@ -36,19 +35,23 @@ def generate_launch_description():
     robot_name_in_model = 'robot'
 
     # Get URDF via xacro
+    # Process the URDF file
+    pkg_path = os.path.join(get_package_share_directory('modelo_robot'))
+    xacro_file = os.path.join(pkg_path,'urdf','robot.urdf.xacro')
+    # robot_description_config = xacro.process_file(xacro_file).toxml()
+    robot_description_config = Command(['xacro ', xacro_file])
 
-    urdf_file_name = 'ensamblaje.urdf'
-    urdf = os.path.join(
-        get_package_share_directory('modelo_robot'),
-        'urdf',
-        urdf_file_name
-        )
-    with open(urdf, 'r') as infp:
-        robot_desc = infp.read()
+     
+ 
+    # Create a robot_state_publisher node
+    params = {'robot_description': robot_description_config, 'use_sim_time': use_sim_time}
+    node_robot_state_publisher = Node(
+        package='robot_state_publisher',
+        executable='robot_state_publisher',
+        output='screen',
+        parameters=[params]
+    )
 
-    robot_description = {"robot_description": robot_desc}
- 
- 
     #rivz2
     rviz2 = Node(
         package='rviz2',
@@ -56,12 +59,6 @@ def generate_launch_description():
         name='rviz2',
         output='log',
         parameters=[{'use_sim_time': use_sim_time}],
-    )
- 
-    robot_state_publisher_node = Node(
-        package='robot_state_publisher',
-        executable='robot_state_publisher',
-        parameters= [{'use_sim_time': use_sim_time, 'robot_description': robot_desc}] #[{'use_sim_time': use_sim_time, "robot_description": robot_description_content}],
     )
 
     start_joint_state_publisher_cmd = Node(
@@ -107,6 +104,18 @@ def generate_launch_description():
         cmd=['gazebo', '--verbose', '-s', 'libgazebo_ros_factory.so', 
         '-s', 'libgazebo_ros_init.so'], output='screen',
         )
+    
+    diff_drive_controller_spawner = Node(
+        package="controller_manager",
+        executable="spawner",
+        arguments=["diff_drive_controller"],
+    )
+
+    joint_state_broadcaster_spawner = Node(
+        package="controller_manager",
+        executable="spawner",
+        arguments=["joint_state_broadcaster"],
+    )
 
      
     return LaunchDescription([
@@ -114,7 +123,6 @@ def generate_launch_description():
     rviz2,
     spawn,
     start_joint_state_publisher_cmd, 
-    robot_state_publisher_node,
     gazebo,
     diff_drive_controller_spawner,
     joint_state_broadcaster_spawner
