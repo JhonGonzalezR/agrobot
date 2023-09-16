@@ -1,54 +1,127 @@
-import launch
-from launch.substitutions import Command, LaunchConfiguration
-import launch_ros
-import os
-from ament_index_python.packages import get_package_share_directory
+# Author: Javier Ferney Castillo
+# Date: July 14 2023
+# Description: Launch a robot arm URDF file using Rviz.
+ 
 
+import os
+from launch import LaunchDescription
+from launch.actions import DeclareLaunchArgument
+from launch.conditions import IfCondition, UnlessCondition
+from launch.substitutions import Command, LaunchConfiguration
+from launch_ros.actions import Node
+from launch_ros.substitutions import FindPackageShare
 
 def generate_launch_description():
+  # Set the path to different files and folders.
+  pkg_share = FindPackageShare(package='modelo_robot').find('modelo_robot')
+  default_launch_dir = os.path.join(pkg_share, 'launch')
+  default_model_path = os.path.join(pkg_share, 'urdf/robot.urdf.xacro')
+  robot_name_in_urdf = 'robot'
+  default_rviz_config_path = os.path.join(pkg_share, 'rviz/display.rviz')
 
-    urdf_file_name = 'ensamblaje.urdf'
-    urdf = os.path.join(
-        get_package_share_directory('modelo_robot'),
-        'urdf',
-        urdf_file_name)
-    with open(urdf, 'r') as infp:
-        robot_desc = infp.read()
+  # Launch configuration variables specific to simulation
+  gui = LaunchConfiguration('gui')
+  model = LaunchConfiguration('model')
+  rviz_config_file = LaunchConfiguration('rviz_config_file')
+  use_robot_state_pub = LaunchConfiguration('use_robot_state_pub')
+  use_rviz = LaunchConfiguration('use_rviz')
+  use_sim_time = LaunchConfiguration('use_sim_time')
 
+  # Declare the launch arguments
+  declare_model_path_cmd = DeclareLaunchArgument(
+    name='model',
+    default_value=default_model_path,
+    description='Absolute path to robot urdf file'
+  )
 
-    robot_state_publisher_node = launch_ros.actions.Node(
-        package='robot_state_publisher',
-        executable='robot_state_publisher',
-        name='robot_state_publisher',
-        output='screen',
-        parameters=[{'robot_description': robot_desc}],
-        arguments=[urdf]
-    )
-    joint_state_publisher_node = launch_ros.actions.Node(
-        package='joint_state_publisher',
-        executable='joint_state_publisher',
-        name='joint_state_publisher',
-        condition=launch.conditions.UnlessCondition(LaunchConfiguration('gui'))
-    )
-    joint_state_publisher_gui_node = launch_ros.actions.Node(
-        package='joint_state_publisher_gui',
-        executable='joint_state_publisher_gui',
-        name='joint_state_publisher_gui',
-        condition=launch.conditions.IfCondition(LaunchConfiguration('gui'))
-    )
-    rviz_node = launch_ros.actions.Node(
-        package='rviz2',
-        executable='rviz2',
-        name='rviz2',
-        output='screen',
-    )
+  declare_rviz_config_file_cmd = DeclareLaunchArgument(
+    name='rviz_config_file',
+    default_value=default_rviz_config_path,
+    description='Full path to the RVIZ config file to use'
+  )
 
-    return launch.LaunchDescription([
-        launch.actions.DeclareLaunchArgument(name='gui', default_value='True',
-                                             description='Flag to enable joint_state_publisher_gui'),
+  declare_use_joint_state_publisher_cmd = DeclareLaunchArgument(
+    name='gui',
+    default_value='True',
+    description='Flag to enable joint_state_publisher_gui'
+  )
 
-        joint_state_publisher_node,
-        joint_state_publisher_gui_node,
-        robot_state_publisher_node,
-        rviz_node
-    ])
+  declare_use_robot_state_pub_cmd = DeclareLaunchArgument(
+    name='use_robot_state_pub',
+    default_value='True',
+    description='Whether to start the robot state publisher'
+  )
+
+  declare_use_rviz_cmd = DeclareLaunchArgument(
+    name='use_rviz',
+    default_value='True',
+    description='Whether to start RVIZ'
+  )
+
+  declare_use_sim_time_cmd = DeclareLaunchArgument(
+    name='use_sim_time',
+    default_value='True',
+    description='Use simulation (Gazebo) clock if true'
+  )
+
+  declare_source_list = DeclareLaunchArgument(
+    name='source_list',
+    default_value='["joint_states_interpolated"]',
+    description='The source list for joint state publisher'
+  )
+
+  # Specify the actions
+  # Publish the joint state values for the non-fixed joints in the URDF file.
+  start_joint_state_publisher_cmd = Node(
+    condition=UnlessCondition(gui),
+    package='joint_state_publisher',
+    executable='joint_state_publisher',
+    name='joint_state_publisher',
+    parameters=[{'source_list': LaunchConfiguration('source_list')}]
+  )
+
+  # A GUI to manipulate the joint state values
+  start_joint_state_publisher_gui_node = Node(
+    condition=IfCondition(gui),
+    package='joint_state_publisher_gui',
+    executable='joint_state_publisher_gui',
+    name='joint_state_publisher_gui'
+  )
+
+  # Subscribe to the joint states of the robot, and publish the 3D pose of each link.
+  start_robot_state_publisher_cmd = Node(
+    condition=IfCondition(use_robot_state_pub),
+    package='robot_state_publisher',
+    executable='robot_state_publisher',
+    parameters=[{'use_sim_time': use_sim_time, 'robot_description': Command(['xacro ', model])}],
+    arguments=[default_model_path]
+  )
+
+  # Launch RViz
+  start_rviz_cmd = Node(
+    condition=IfCondition(use_rviz),
+    package='rviz2',
+    executable='rviz2',
+    name='rviz2',
+    output='screen',
+    arguments=['-d', rviz_config_file]
+  )
+
+  # Create the launch description and populate
+  ld = LaunchDescription()
+
+  # Declare the launch options
+  ld.add_action(declare_model_path_cmd)
+  ld.add_action(declare_rviz_config_file_cmd)
+  ld.add_action(declare_use_joint_state_publisher_cmd)
+  ld.add_action(declare_use_robot_state_pub_cmd)
+  ld.add_action(declare_use_rviz_cmd)
+  ld.add_action(declare_use_sim_time_cmd)
+
+  # Add any actions
+  ld.add_action(start_joint_state_publisher_cmd)
+  ld.add_action(start_joint_state_publisher_gui_node)
+  ld.add_action(start_robot_state_publisher_cmd)
+  ld.add_action(start_rviz_cmd)
+
+  return ld

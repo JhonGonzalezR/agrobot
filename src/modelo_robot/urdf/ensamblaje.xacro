@@ -2,9 +2,28 @@
 <!-- This URDF was automatically created by SolidWorks to URDF Exporter! Originally created by Stephen Brawner (brawner@gmail.com) 
      Commit Version: 1.6.0-4-g7f85cfe  Build Version: 1.6.7995.38578
      For more information, please see http://wiki.ros.org/sw_urdf_exporter -->
-<robot name="robot">
+
+<robot xmlns:xacro="http://www.ros.org/wiki/xacro" >
+  <link name="base_link">
+    </link>
+    <!-- BASE_FOOTPRINT LINK -->
+    <joint name="base_footprint_joint" type="fixed">
+        <parent link="base_link"/>
+        <child link="base_footprint"/>
+        <origin xyz="0 0 0" rpy="0 0 0"/>
+    </joint>
+
+    <link name="base_footprint">
+    </link>
+
+  <joint name="chassis_joint" type="fixed">
+        <parent link="base_link"/>
+        <child link="chassis"/>
+        <origin xyz="0 0 0"/>
+    </joint>
+
   <link
-    name="base_link">
+    name="chassis">
     <inertial>
       <origin
         xyz="-0.011623 0.00031297 0.03414"
@@ -44,11 +63,7 @@
     </collision>
   </link>
   
-  <gazebo reference="base_link">
-    <mu1>0.001</mu1>
-    <mu2>0.001</mu2>
-    <kp>1000000</kp>
-    <kd>1</kd>
+  <gazebo reference="chassis">
     <material>Gazebo/Yellow</material>
   </gazebo>
   
@@ -376,96 +391,14 @@
     <child
       link="apersor_link" />
     <axis
-      xyz="0 0 1" />
+      xyz="0 1 0" />
     <limit
-      lower="0"
-      upper="0"
-      effort="0"
-      velocity="100" />
+      lower="-1.5707"
+      upper="1.5707"
+      effort="5"
+      velocity="1" />
     <dynamics
       damping="0.1"
       friction="0.1" />
   </joint>
-  <link name="lindar_link">
-    <inertial>
-      <origin xyz="-2.7756E-17 0.01 0" rpy="0 0 0" />
-      <mass value="0.066366" />
-      <inertia
-        ixx="1.9737E-05"
-        ixy="-2.8234E-22"
-        ixz="-2.8411E-21"
-        iyy="3.505E-05"
-        iyz="-1.4117E-22"
-        izz="1.9737E-05" />
-    </inertial>
-    <visual>
-      <origin xyz="0 0 0" rpy="0 0 0" />
-      <geometry>
-        <mesh filename="package://modelo_robot/meshes/lindar_link.STL" />
-      </geometry>
-      <material name="">
-        <color rgba="0.79216 0.81961 0.93333 1" />
-      </material>
-    </visual>
-    <collision>
-      <origin xyz="0 0 0" rpy="0 0 0" />
-      <geometry>
-        <mesh filename="package://modelo_robot/meshes/lindar_link.STL" />
-      </geometry>
-    </collision>
-  </link>
-  
-  <gazebo reference="lindar_link">
-    <material>Gazebo/Blue</material>
-  </gazebo>
-  
-  <joint name="lidar_frame" type="fixed">
-    <origin xyz="0.031539 -0.0015685 0.17" rpy="1.5708 0 3.1416" />
-    <parent link="base_link" />
-    <child link="lindar_link" />
-    <axis xyz="0 0 0" />
-  </joint>
-
-
-    <!-- Gazebo Plugins -->
-    <gazebo>
-        <plugin name="diff_drive" filename="libgazebo_ros_diff_drive.so">
-            <update_rate>100</update_rate>
-            <num_wheel_pairs>2</num_wheel_pairs>
-            <!-- Wheel Information -->
-            <left_joint>rueda_izq_trasera_joint</left_joint>
-            <left_joint>rueda_izq_delantera_joint</left_joint>
-            <right_joint>rueda_der_trasera_joint</right_joint>
-            <right_joint>rueda_der_delantera_joint</right_joint>
-            <wheel_separation>0.20</wheel_separation>
-            <wheel_radius>0.122</wheel_radius>
-
-            <!-- Limits -->
-            <max_linear_acceleration>5</max_linear_acceleration>
-            <min_linear_acceleration>-5</min_linear_acceleration>
-            <max_angular_acceleration>4</max_angular_acceleration>
-            <min_angular_acceleration>-4</min_angular_acceleration>
-
-            <!-- Receive velocity commands on this ROS topic -->
-            <command_topic>cmd_vel</command_topic>
-      
-            <!-- output -->
-            <!-- When false, publish no wheel odometry data to a ROS topic -->
-            <publish_odom>true</publish_odom>
-      
-            <!-- When true, publish coordinate transform from odom to base_footprint -->
-            <!-- I usually use the robot_localization package to publish this transform -->  
-            <publish_odom_tf>true</publish_odom_tf>
-          
-            <!-- When true, publish coordinate transform from base_link to the wheels -->
-            <!-- The robot_state_publisher package is often used to publish this transform -->  
-            <publish_wheel_tf>true</publish_wheel_tf>
-      
-            <odometry_topic>odom</odometry_topic>
-            <odometry_frame>odom_link</odometry_frame>
-            <robot_base_frame>base_link</robot_base_frame>
-        </plugin>
-    </gazebo>
-
-
 </robot>
