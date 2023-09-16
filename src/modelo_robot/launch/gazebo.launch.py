@@ -15,6 +15,7 @@ from launch.event_handlers import OnProcessExit
   
 def generate_launch_description():
     # Check if we're told to use sim time
+    use_ros2_control = LaunchConfiguration('use_ros2_control')
     model_arg = DeclareLaunchArgument(name='model', description='Absolute path to robot urdf file')
     pkg_gazebo_ros = get_package_share_directory('gazebo_ros')
     use_sim_time = LaunchConfiguration('use_sim_time') 
@@ -31,6 +32,10 @@ def generate_launch_description():
         default_value='true',
         description='Use simulation (Gazebo) clock if true'
         )
+    declare_use_ros2_control_cmd = DeclareLaunchArgument(
+            'use_ros2_control',
+            default_value='true',
+            description='Use ros2_control if true')
 
     robot_name_in_model = 'robot'
 
@@ -39,7 +44,7 @@ def generate_launch_description():
     pkg_path = os.path.join(get_package_share_directory('modelo_robot'))
     xacro_file = os.path.join(pkg_path,'urdf','robot.urdf.xacro')
     # robot_description_config = xacro.process_file(xacro_file).toxml()
-    robot_description_config = Command(['xacro ', xacro_file])
+    robot_description_config = Command(['xacro ', xacro_file, ' use_ros2_control:=', use_ros2_control, ' sim_mode:=', use_sim_time])
 
      
  
@@ -120,6 +125,7 @@ def generate_launch_description():
      
     return LaunchDescription([
     declare_use_sim_time_cmd,
+    declare_use_ros2_control_cmd,
     rviz2,
     spawn,
     start_joint_state_publisher_cmd, 
