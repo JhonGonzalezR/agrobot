@@ -89,8 +89,8 @@ def generate_launch_description():
         rsp,
         #joystick,
         #twist_mux,
-        gazebo,
         spawn_entity,
+        gazebo,
         diff_drive_controller_spawner,
         joint_state_broadcaster_spawner
     ])
