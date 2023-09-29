@@ -6,6 +6,6 @@
 
     <xacro:include filename="ensamblaje.xacro" />
     <xacro:include filename="lidar.xacro" />
-    <xacro:include filename="ros2_control.xacro" />
+    <xacro:include filename="ros2_control.xacro"/>
 
 </robot>

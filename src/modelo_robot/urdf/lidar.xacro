@@ -2,19 +2,23 @@
 <robot xmlns:xacro="http://www.ros.org/wiki/xacro" >
    <xacro:include filename="inertial_macros.xacro"/>
 
-  <link name="lindar_link">
+  <link name="laser_frame">
           <visual>
               <geometry>
                   <cylinder radius="0.03" length="0.02"/>
               </geometry>
-              <material name="black"/>
+              <material name="black">
+                    <color rgba="0 0 0 1"/>
+                </material>
           </visual>
           <visual>
               <origin xyz="0 0 -0.05"/>
               <geometry>
                   <cylinder radius="0.01" length="0.1"/>
               </geometry>
-              <material name="black"/>
+              <material name="black">
+                    <color rgba="0 0 0 1"/>
+                </material>
           </visual>
           <collision>
               <geometry>
@@ -26,14 +30,14 @@
           </xacro:inertial_cylinder>
       </link>
   
-  <joint name="lidar_frame" type="fixed">
+  <joint name="laser_joint" type="fixed">
     <origin xyz="0.031539 -0.0015685 0.17" rpy="0 0 0" />
     <parent link="base_link" />
-    <child link="lindar_link" />
+    <child link="laser_frame" />
     <axis xyz="0 0 0" />
   </joint>
 
-  <gazebo reference="lindar_link">
+  <gazebo reference="laser_frame">
         <material>Gazebo/Blue</material>
 
         <sensor name="laser" type="ray">

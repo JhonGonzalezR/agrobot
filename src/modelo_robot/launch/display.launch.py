@@ -17,7 +17,7 @@ def generate_launch_description():
   default_launch_dir = os.path.join(pkg_share, 'launch')
   default_model_path = os.path.join(pkg_share, 'urdf/robot.urdf.xacro')
   robot_name_in_urdf = 'robot'
-  default_rviz_config_path = os.path.join(pkg_share, 'rviz/display.rviz')
+  default_rviz_config_path = os.path.join(pkg_share, 'rviz/rviz.rviz')
 
   # Launch configuration variables specific to simulation
   gui = LaunchConfiguration('gui')

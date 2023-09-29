@@ -14,9 +14,9 @@ diff_drive_controller:
     left_wheel_names: ["rueda_izq_delantera_joint", "rueda_izq_trasera_joint"]
     right_wheel_names: ["rueda_der_delantera_joint", "rueda_der_trasera_joint"]
 
-    wheel_separation: 0.20
+    wheel_separation: 0.25
     wheels_per_side: 2
-    wheel_radius: 0.122
+    wheel_radius: 0.13
 
     
 
