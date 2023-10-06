@@ -145,6 +145,6 @@ def generate_launch_description():
     gazebo,
     joint_state_broadcaster_spawner,
     #position_controller,
-    #load_joint_trajectory_controller,
-    diff_drive_controller_spawner,
+    load_joint_trajectory_controller,
+    #diff_drive_controller_spawner,
 ])

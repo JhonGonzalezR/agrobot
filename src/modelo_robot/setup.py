@@ -26,7 +26,7 @@ setup(
     license='Apache License 2.0',
     tests_require=['pytest'],
     entry_points={
-        'console_scripts': [
+        'console_scripts': ["pos_ctrl=modelo_robot.position_ctrl:main",
         ],
     },
 )
