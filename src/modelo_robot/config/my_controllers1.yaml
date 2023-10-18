@@ -1,0 +1,49 @@
+controller_manager:
+  ros__parameters:
+    update_rate: 100
+    #use_sim_time: true
+
+    joint_state_broadcaster:
+      type: joint_state_broadcaster/JointStateBroadcaster
+
+    diff_drive_controller:
+      type: diff_drive_controller/DiffDriveController
+
+diff_drive_controller:
+  ros__parameters:
+    left_wheel_names: ["rueda_izq_delantera_joint"]
+    right_wheel_names: ["rueda_der_delantera_joint"]
+
+    wheel_separation: 0.25
+    wheels_per_side: 2
+    wheel_radius: 0.13
+
+    
+
+    base_frame_id: base_link
+    odom_frame_id: odom
+    enable_odom_tf: true
+    publish_rate: 50.0
+
+    open_loop: false
+
+    cmd_vel_timeout: 0.5
+    use_stamped_vel: false
+    velocity_rolling_window_size: 10
+
+    preserve_turning_radius: true
+
+    # Publish limited velocity
+    publish_limited_velocity: true
+
+    linear/x:
+      has_velocity_limits: true
+      max_velocity: 10.0
+      has_acceleration_limits: true
+      max_acceleration: 15.0
+
+    angular/z:
+      has_velocity_limits: true
+      max_velocity: 15.0
+      has_acceleration_limits: true
+      max_acceleration: 17.0

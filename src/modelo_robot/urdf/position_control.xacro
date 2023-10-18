@@ -55,7 +55,7 @@
 
     <gazebo>
       <plugin filename="libgazebo_ros2_control.so" name="gazebo_ros2_control">
-        <parameters>/home/andres/agrobot/src/modelo_robot/config/pos_controllers.yaml</parameters>
+        <parameters>$(find modelo_robot)/config/pos_controllers.yaml</parameters>
       </plugin>
     </gazebo>
 
