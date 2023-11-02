@@ -4,9 +4,9 @@
     <xacro:arg name="use_ros2_control" default="true"/>
     <xacro:arg name="sim_mode" default="true"/>
 
-    <xacro:include filename="ensamblaje.xacro" />
-    <xacro:include filename="lidar.xacro" />
-    <xacro:include filename="ros2_control.xacro"/>
+    <xacro:include filename="robot2_core.xacro" />
+    <xacro:include filename="lidar2.xacro" />
+    <xacro:include filename="ros_control_robot2.xacro"/>
     <!--xacro:include filename="control_arduino.xacro"/-->
 
 

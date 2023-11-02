@@ -1,6 +1,11 @@
 <?xml version="1.0"?>
 <robot xmlns:xacro="http://www.ros.org/wiki/xacro" >
-   <xacro:include filename="inertial_macros.xacro"/>
+
+    <joint name="laser_joint" type="fixed">
+        <origin xyz="0.031539 -0.0015685 0.20" rpy="0 0 0" />
+        <parent link="chassis" />
+        <child link="laser_frame" />
+    </joint>
 
   <link name="laser_frame">
           <visual>
@@ -22,7 +27,7 @@
           </visual>
           <collision>
               <geometry>
-                  <cylinder radius="0.05" length="0.04"/>
+                  <cylinder radius="0.03" length="0.02"/>
               </geometry>
           </collision>
           <xacro:inertial_cylinder mass="0.1" length="0.02" radius="0.03">
@@ -30,13 +35,6 @@
           </xacro:inertial_cylinder>
       </link>
   
-  <joint name="laser_joint" type="fixed">
-    <origin xyz="0.031539 -0.0015685 0.17" rpy="0 0 0" />
-    <parent link="base_link" />
-    <child link="laser_frame" />
-    <axis xyz="0 0 0" />
-  </joint>
-
   <gazebo reference="laser_frame">
         <material>Gazebo/Blue</material>
 
