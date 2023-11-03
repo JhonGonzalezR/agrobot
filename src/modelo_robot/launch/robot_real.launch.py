@@ -1,59 +1,114 @@
 import os
-
+  
 from ament_index_python.packages import get_package_share_directory
-
-
-from launch import LaunchDescription
-from launch.actions import IncludeLaunchDescription, TimerAction
+ 
+from launch_ros.parameter_descriptions import ParameterValue
 from launch.launch_description_sources import PythonLaunchDescriptionSource
-from launch.substitutions import Command
-from launch.actions import RegisterEventHandler
-from launch.event_handlers import OnProcessStart
-
+from launch import LaunchDescription
+from launch.actions import DeclareLaunchArgument, IncludeLaunchDescription, ExecuteProcess
+from launch.conditions import IfCondition
+from launch.substitutions import Command, FindExecutable, LaunchConfiguration, PathJoinSubstitution
 from launch_ros.actions import Node
-
-
-
+from launch_ros.substitutions import FindPackageShare
+from launch.actions import RegisterEventHandler
+from launch.event_handlers import OnProcessExit
+from launch.actions import IncludeLaunchDescription, TimerAction
+from launch.event_handlers import OnProcessStart
+  
 def generate_launch_description():
+    # Check if we're told to use sim time
+    use_ros2_control = LaunchConfiguration('use_ros2_control')
+    model_arg = DeclareLaunchArgument(name='model', description='Absolute path to robot urdf file')
+    pkg_gazebo_ros = get_package_share_directory('gazebo_ros')
+    use_sim_time = LaunchConfiguration('use_sim_time') 
+    package_name = 'modelo_robot'
+    pkg_share = FindPackageShare(package=package_name).find(package_name)
+    pkg_gazebo_ros = FindPackageShare(package='gazebo_ros').find('gazebo_ros') 
+    default_rviz_config_path = os.path.join(pkg_share, 'rviz/rviz.rviz')
+    rviz_config_file = LaunchConfiguration('rviz_config_file')
 
+    #world_file_path = 'world.world'
+    #world = LaunchConfiguration('world')
+    #world_path = os.path.join(pkg_share, 'worlds',  world_file_path)
 
-    # Include the robot_state_publisher launch file, provided by our own package. Force sim time to be enabled
-    # !!! MAKE SURE YOU SET THE PACKAGE NAME CORRECTLY !!!
+    declare_use_sim_time_cmd = DeclareLaunchArgument(
+        name='use_sim_time',
+        default_value='false',
+        description='Use simulation (Gazebo) clock if true'
+        )
+    declare_use_ros2_control_cmd = DeclareLaunchArgument(
+            'use_ros2_control',
+            default_value='true',
+            description='Use ros2_control if true')
+    
+    declare_rviz_config_file_cmd = DeclareLaunchArgument(
+    name='rviz_config_file',
+    default_value=default_rviz_config_path,
+    description='Full path to the RVIZ config file to use'
+  )
 
-    package_name='modelo_robot' #<--- CHANGE ME
+    robot_name_in_model = 'robot'
 
-    rsp = IncludeLaunchDescription(
-                PythonLaunchDescriptionSource([os.path.join(
-                    get_package_share_directory(package_name),'launch','rsp.launch.py'
-                )]), launch_arguments={'use_sim_time': 'false', 'use_ros2_control': 'true'}.items()
+    # Get URDF via xacro
+    # Process the URDF file
+    pkg_path = os.path.join(get_package_share_directory('modelo_robot'))
+    xacro_file = os.path.join(pkg_path,'urdf','robot_real.urdf.xacro')
+    # robot_description_config = xacro.process_file(xacro_file).toxml()
+    robot_description_config = Command(['xacro ', xacro_file, ' use_ros2_control:=', use_ros2_control, ' sim_mode:=', use_sim_time])
+
+     
+ 
+    # Create a robot_state_publisher node
+    params = {'robot_description': robot_description_config, 'use_sim_time': use_sim_time}
+    node_robot_state_publisher = Node(
+        package='robot_state_publisher',
+        executable='robot_state_publisher',
+        output='screen',
+        parameters=[params]
     )
 
-    # joystick = IncludeLaunchDescription(
-    #             PythonLaunchDescriptionSource([os.path.join(
-    #                 get_package_share_directory(package_name),'launch','joystick.launch.py'
-    #             )])
-    # )
+    #rivz2
+    rviz2 = Node(
+        package='rviz2',
+        executable='rviz2',
+        name='rviz2',
+        output='log',
+        parameters=[{'use_sim_time': use_sim_time}],
+    )
 
+    start_joint_state_publisher_cmd = Node(
+        package='joint_state_publisher',
+            executable='joint_state_publisher',
+            parameters=[{'use_sim_time': use_sim_time}],
+        name='joint_state_publisher',
+    )
+ 
 
-    # twist_mux_params = os.path.join(get_package_share_directory(package_name),'config','twist_mux.yaml')
-    # twist_mux = Node(
-    #         package="twist_mux",
-    #         executable="twist_mux",
-    #         parameters=[twist_mux_params],
-    #         remappings=[('/cmd_vel_out','/diff_cont/cmd_vel_unstamped')]
-    #     )
+    '''declare_world_cmd = DeclareLaunchArgument(
+        name='world',
+        default_value=world_path,
+        description='Full path to the world model file to load'
+        ) '''
 
-    
+    diff_drive_controller_spawner = Node(
+        package="controller_manager",
+        executable="spawner",
+        arguments=["diff_drive_controller"],
+    )
 
+    joint_state_broadcaster_spawner = Node(
+        package="controller_manager",
+        executable="spawner",
+        arguments=["joint_state_broadcaster"],
+    )
 
     robot_description = Command(['ros2 param get --hide-type /robot_state_publisher robot_description'])
-
     controller_params_file = os.path.join(get_package_share_directory(package_name),'config','my_controllers1.yaml')
 
     controller_manager = Node(
         package="controller_manager",
         executable="ros2_control_node",
-        parameters=[{'robot_description': robot_description},
+        parameters=[{'robot_description': robot_description_config},
                     controller_params_file]
     )
 
@@ -85,31 +140,18 @@ def generate_launch_description():
         )
     )
 
-
-    # Code for delaying a node (I haven't tested how effective it is)
-    # 
-    # First add the below lines to imports
-    # from launch.actions import RegisterEventHandler
-    # from launch.event_handlers import OnProcessExit
-    #
-    # Then add the following below the current diff_drive_spawner
-    # delayed_diff_drive_spawner = RegisterEventHandler(
-    #     event_handler=OnProcessExit(
-    #         target_action=spawn_entity,
-    #         on_exit=[diff_drive_spawner],
-    #     )
-    # )
-    #
-    # Replace the diff_drive_spawner in the final return with delayed_diff_drive_spawner
-
-
-
-    # Launch them all!
+    
+     
     return LaunchDescription([
-        rsp,
-        # joystick,
-        #twist_mux,
-        delayed_controller_manager,
-        delayed_diff_drive_spawner,
-        delayed_joint_broad_spawner
-    ])
+    declare_use_sim_time_cmd,   
+    declare_use_ros2_control_cmd,
+    #declare_rviz_config_file_cmd,
+    node_robot_state_publisher,
+    start_joint_state_publisher_cmd, 
+    #rviz2,
+    #joint_state_broadcaster_spawner,
+    #diff_drive_controller_spawner,
+    delayed_controller_manager,
+    delayed_diff_drive_spawner,
+    delayed_joint_broad_spawner
+])
