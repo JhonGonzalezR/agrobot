@@ -7,7 +7,7 @@ def generate_launch_description():
     return LaunchDescription([
 
         Node(
-            package='rplidar_ros2',
+            package='rplidar_ros',
             executable='rplidar_composition',
             output='screen',
             parameters=[{
