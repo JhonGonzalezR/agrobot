@@ -15,7 +15,6 @@ class aspersor(Node): # MODIFY NAME
 
         self.DIR_PIN = 19  # Pin para la dirección del motor (Dir)
         self.STEP_PIN = 20  # Pin para el pulso del motor    (STEP)
-        self.PUSH_PIN = 6  # Pin para el botón de paro       (PUSH)
         self.bombaPin = 25 # Pin para la bomba
 
         self.start = 0
@@ -27,7 +26,6 @@ class aspersor(Node): # MODIFY NAME
         GPIO.setup(self.DIR_PIN, GPIO.OUT)
         GPIO.setup(self.STEP_PIN, GPIO.OUT)
         GPIO.setup(self.bombaPin, GPIO.OUT)
-        GPIO.setup(self.PUSH_PIN, GPIO.IN, pull_up_down=GPIO.PUD_UP)
 
 
         
