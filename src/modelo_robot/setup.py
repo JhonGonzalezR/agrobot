@@ -28,6 +28,7 @@ setup(
     tests_require=['pytest'],
     entry_points={
         'console_scripts': ["pos_ctrl=modelo_robot.position_ctrl:main",
+        "aspersor=modelo_robot.aspersor:main",
         ],
     },
 )

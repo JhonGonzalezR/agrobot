@@ -18,14 +18,8 @@ from launch.event_handlers import OnProcessStart
 def generate_launch_description():
     # Check if we're told to use sim time
     use_ros2_control = LaunchConfiguration('use_ros2_control')
-    model_arg = DeclareLaunchArgument(name='model', description='Absolute path to robot urdf file')
-    pkg_gazebo_ros = get_package_share_directory('gazebo_ros')
     use_sim_time = LaunchConfiguration('use_sim_time') 
     package_name = 'modelo_robot'
-    pkg_share = FindPackageShare(package=package_name).find(package_name)
-    pkg_gazebo_ros = FindPackageShare(package='gazebo_ros').find('gazebo_ros') 
-    default_rviz_config_path = os.path.join(pkg_share, 'rviz/rviz.rviz')
-    rviz_config_file = LaunchConfiguration('rviz_config_file')
 
     #world_file_path = 'world.world'
     #world = LaunchConfiguration('world')
@@ -41,13 +35,6 @@ def generate_launch_description():
             default_value='true',
             description='Use ros2_control if true')
     
-    declare_rviz_config_file_cmd = DeclareLaunchArgument(
-    name='rviz_config_file',
-    default_value=default_rviz_config_path,
-    description='Full path to the RVIZ config file to use'
-  )
-
-    robot_name_in_model = 'robot'
 
     # Get URDF via xacro
     # Process the URDF file
@@ -67,42 +54,13 @@ def generate_launch_description():
         parameters=[params]
     )
 
-    #rivz2
-    rviz2 = Node(
-        package='rviz2',
-        executable='rviz2',
-        name='rviz2',
-        output='log',
-        parameters=[{'use_sim_time': use_sim_time}],
-    )
-
     start_joint_state_publisher_cmd = Node(
         package='joint_state_publisher',
             executable='joint_state_publisher',
             parameters=[{'use_sim_time': use_sim_time}],
         name='joint_state_publisher',
     )
- 
 
-    '''declare_world_cmd = DeclareLaunchArgument(
-        name='world',
-        default_value=world_path,
-        description='Full path to the world model file to load'
-        ) '''
-
-    diff_drive_controller_spawner = Node(
-        package="controller_manager",
-        executable="spawner",
-        arguments=["diff_drive_controller"],
-    )
-
-    joint_state_broadcaster_spawner = Node(
-        package="controller_manager",
-        executable="spawner",
-        arguments=["joint_state_broadcaster"],
-    )
-
-    robot_description = Command(['ros2 param get --hide-type /robot_state_publisher robot_description'])
     controller_params_file = os.path.join(get_package_share_directory(package_name),'config','my_controllers1.yaml')
 
     controller_manager = Node(
