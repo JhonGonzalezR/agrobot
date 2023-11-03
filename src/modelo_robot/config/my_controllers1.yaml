@@ -1,6 +1,6 @@
 controller_manager:
   ros__parameters:
-    update_rate: 100
+    update_rate: 30
     #use_sim_time: true
 
     joint_state_broadcaster:
@@ -14,9 +14,9 @@ diff_drive_controller:
     left_wheel_names: ["rueda_izq_delantera_joint"]
     right_wheel_names: ["rueda_der_delantera_joint"]
 
-    wheel_separation: 0.25
+    wheel_separation: 0.245
     wheels_per_side: 2
-    wheel_radius: 0.13
+    wheel_radius: 0.055
 
     
 
@@ -38,12 +38,12 @@ diff_drive_controller:
 
     linear/x:
       has_velocity_limits: true
-      max_velocity: 10.0
+      max_velocity: 5
       has_acceleration_limits: true
-      max_acceleration: 15.0
+      max_acceleration: 7
 
     angular/z:
       has_velocity_limits: true
-      max_velocity: 15.0
+      max_velocity: 5
       has_acceleration_limits: true
-      max_acceleration: 17.0
+      max_acceleration: 7
