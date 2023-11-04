@@ -1,84 +1,53 @@
-#!/usr/bin/env python3
 import rclpy
 from rclpy.node import Node
 import RPi.GPIO as GPIO
 import time
-from sensor_msgs.msg import Joy
 
-
-
-class aspersor(Node): # MODIFY NAME
+class Nema17ControlNode(Node):
     def __init__(self):
-        super().__init__("aspersor") # MODIFY NAME
-        self.suscriber_ = self.create_subscription(Joy,"Joy",self.callbackJoyPressed,10)
-        self.get_logger().info("Leyendo valores de Joystick")
+        super().__init__('nema17_control_node')
 
-        self.DIR_PIN = 19  # Pin para la dirección del motor (Dir)
-        self.STEP_PIN = 20  # Pin para el pulso del motor    (STEP)
-        self.bombaPin = 25 # Pin para la bomba
+        self.DEVICE_DIR_PIN = 19
+        self.DEVICE_STEP_PIN = 20
+        self.DEVICE_PUSH_PIN = 6
 
-        self.start = 0
-        Joy.buttons
-        
-
-        # Configurar los pines GPIO
         GPIO.setmode(GPIO.BCM)
-        GPIO.setup(self.DIR_PIN, GPIO.OUT)
-        GPIO.setup(self.STEP_PIN, GPIO.OUT)
-        GPIO.setup(self.bombaPin, GPIO.OUT)
+        GPIO.setup(self.DEVICE_DIR_PIN, GPIO.OUT)
+        GPIO.setup(self.DEVICE_STEP_PIN, GPIO.OUT)
+        GPIO.setup(self.DEVICE_PUSH_PIN, GPIO.IN, pull_up_down=GPIO.PUD_UP)
 
+        self.start_motor = 1
 
-        
-    def callbackJoyPressed(self,msg):
-        if msg.buttons[2] == 1:
-            self.start += 1
-        if self.start == 2:
-            self.start = 0
-        self.rotarMotor()
+        self.timer_period = 0.001
+        self.timer = self.create_timer(self.timer_period, self.timer_callback)
 
+    def timer_callback(self):
+        if self.start_motor == 1:
+            GPIO.output(self.DEVICE_DIR_PIN, GPIO.HIGH)
+            for i in range(200):
+                GPIO.output(self.DEVICE_STEP_PIN, GPIO.HIGH)
+                time.sleep(self.timer_period)
+                GPIO.output(self.DEVICE_STEP_PIN, GPIO.LOW)
+                time.sleep(self.timer_period)
 
-    def aspersar(self):
-        GPIO.output(self.bombaPin, GPIO.HIGH)
-        time.sleep(2)
-        GPIO.output(self.bombaPin, GPIO.LOW)
+            GPIO.output(self.DEVICE_DIR_PIN, GPIO.LOW)
+            for i in range(200):
+                GPIO.output(self.DEVICE_STEP_PIN, GPIO.HIGH)
+                time.sleep(self.timer_period)
+                GPIO.output(self.DEVICE_STEP_PIN, GPIO.LOW)
+                time.sleep(self.timer_period)
 
-    def rotarMotor(self):
-        try:
-            
-
-            if self.start == 1:
-
-                # Gira 180 grados hacia la derecha
-                GPIO.output(self.DIR_PIN, GPIO.HIGH)         # Establecer la dirección del motor hacia la derecha
-                for i in range(200):                    # 200->180° y 100->90°
-                    GPIO.output(self.STEP_PIN, GPIO.HIGH)
-                    time.sleep(0.001)                   # Controla la velocidad
-                    GPIO.output(self.STEP_PIN, GPIO.LOW)
-                    time.sleep(0.001)                   # Controla la velocidad
-                    self.aspersar()
-
-                # Gira 180 grados hacia la izquierda
-                GPIO.output(self.DIR_PIN, GPIO.LOW)         # Establecer la dirección del motor hacia la izquierda
-                for i in range(200):                   # 200->180° y 100->90°
-                    GPIO.output(self.STEP_PIN, GPIO.HIGH)
-                    time.sleep(0.001)                  # Controla la velocidad
-                    GPIO.output(self.STEP_PIN, GPIO.LOW)
-                    time.sleep(0.001)                  # Controla la velocidad
-                    self.aspersar()
-                         
-
-        except KeyboardInterrupt:
-            pass
-
-
-
+        if not GPIO.input(self.DEVICE_PUSH_PIN):
+            self.start_motor = 0
+        else:
+            self.start_motor = 1
 
 def main(args=None):
     rclpy.init(args=args)
-    node = aspersor() # MODIFY NAME
+    node = Nema17ControlNode()
     rclpy.spin(node)
+    node.destroy_node()
     rclpy.shutdown()
 
-
-if __name__ == "__main__":
+if __name__ == '__main__':
     main()
