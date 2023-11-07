@@ -10,6 +10,7 @@ class Nema17ControlNode(Node):
         self.DEVICE_DIR_PIN = 19
         self.DEVICE_STEP_PIN = 20
         self.DEVICE_PUSH_PIN = 6
+        self.get_logger().info("Leyendo valores de Joystick")
 
         GPIO.setmode(GPIO.BCM)
         GPIO.setup(self.DEVICE_DIR_PIN, GPIO.OUT)
