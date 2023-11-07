@@ -61,7 +61,7 @@ def generate_launch_description():
         name='joint_state_publisher',
     )
 
-    controller_params_file = os.path.join(get_package_share_directory(package_name),'config','my_controllers1.yaml')
+    controller_params_file = os.path.join(get_package_share_directory(package_name),'config','my_controllersArticu.yaml')
 
     controller_manager = Node(
         package="controller_manager",
