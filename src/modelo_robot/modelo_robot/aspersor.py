@@ -1,53 +1,46 @@
+import RPi.GPIO as GPIO
 import rclpy
 from rclpy.node import Node
-import RPi.GPIO as GPIO
-import time
+from std_msgs.msg import String
 
-class Nema17ControlNode(Node):
+class StepperMotorNode(Node):
+
     def __init__(self):
-        super().__init__('nema17_control_node')
-
-        self.DEVICE_DIR_PIN = 19
-        self.DEVICE_STEP_PIN = 20
-        self.DEVICE_PUSH_PIN = 6
-        self.get_logger().info("Leyendo valores de Joystick")
+        super().__init__('stepper_motor_node')
+        self.publisher_ = self.create_publisher(String, 'stepper_motor_control', 10)
+        self.subscription = self.create_subscription(String, 'stepper_motor_command', self.callback, 10)
+        self.subscription
 
         GPIO.setmode(GPIO.BCM)
-        GPIO.setup(self.DEVICE_DIR_PIN, GPIO.OUT)
-        GPIO.setup(self.DEVICE_STEP_PIN, GPIO.OUT)
-        GPIO.setup(self.DEVICE_PUSH_PIN, GPIO.IN, pull_up_down=GPIO.PUD_UP)
+        self.DIR_PIN = 19  # Pin para la dirección (DIR)
+        self.STEP_PIN = 20  # Pin para el pulso (STEP)
+        GPIO.setup(self.DIR_PIN, GPIO.OUT)
+        GPIO.setup(self.STEP_PIN, GPIO.OUT)
+        self.direction = 1  # 1 para un sentido, -1 para el contrario
 
-        self.start_motor = 1
+    def callback(self, msg):
+        if msg.data == "forward":
+            self.direction = 1
+        elif msg.data == "backward":
+            self.direction = -1
 
-        self.timer_period = 0.001
-        self.timer = self.create_timer(self.timer_period, self.timer_callback)
+        self.move_motor()
 
-    def timer_callback(self):
-        if self.start_motor == 1:
-            GPIO.output(self.DEVICE_DIR_PIN, GPIO.HIGH)
-            for i in range(200):
-                GPIO.output(self.DEVICE_STEP_PIN, GPIO.HIGH)
-                time.sleep(self.timer_period)
-                GPIO.output(self.DEVICE_STEP_PIN, GPIO.LOW)
-                time.sleep(self.timer_period)
+    def move_motor(self):
+        steps = 200  # Cantidad de pasos para una rotación completa
+        delay = 0.005  # Ajusta esto para controlar la velocidad del motor
 
-            GPIO.output(self.DEVICE_DIR_PIN, GPIO.LOW)
-            for i in range(200):
-                GPIO.output(self.DEVICE_STEP_PIN, GPIO.HIGH)
-                time.sleep(self.timer_period)
-                GPIO.output(self.DEVICE_STEP_PIN, GPIO.LOW)
-                time.sleep(self.timer_period)
-
-        if not GPIO.input(self.DEVICE_PUSH_PIN):
-            self.start_motor = 0
-        else:
-            self.start_motor = 1
+        GPIO.output(self.DIR_PIN, self.direction)
+        for _ in range(steps):
+            GPIO.output(self.STEP_PIN, GPIO.HIGH)
+            rclpy.sleep(delay)
+            GPIO.output(self.STEP_PIN, GPIO.LOW)
+            rclpy.sleep(delay)
 
 def main(args=None):
     rclpy.init(args=args)
-    node = Nema17ControlNode()
+    node = StepperMotorNode()
     rclpy.spin(node)
-    node.destroy_node()
     rclpy.shutdown()
 
 if __name__ == '__main__':
