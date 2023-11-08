@@ -34,6 +34,7 @@ class aspersor(Node): # MODIFY NAME
             self.start += 1
             self.get_logger().info("Boton presionado")
         if self.start == 2:
+            self.get_logger().info("Boton presionado pero start es 2")
             self.start = 0
         self.rotarMotor()
 
@@ -44,32 +45,32 @@ class aspersor(Node): # MODIFY NAME
         GPIO.output(self.bombaPin, GPIO.LOW)
 
     def rotarMotor(self):
-        try:
+        
             
 
-            if self.start == 1:
+        if self.start == 1:
+            self.get_logger().info("Entra al metodo con start en 1")
+            # Gira 180 grados hacia la derecha
+            GPIO.output(self.DIR_PIN, GPIO.HIGH)         # Establecer la dirección del motor hacia la derecha
+            for i in range(200):                    # 200->180° y 100->90°
+                GPIO.output(self.STEP_PIN, GPIO.HIGH)
+                time.sleep(0.1)                   # Controla la velocidad
+                GPIO.output(self.STEP_PIN, GPIO.LOW)
+                time.sleep(0.1)                   # Controla la velocidad
+                self.aspersar()
 
-                # Gira 180 grados hacia la derecha
-                GPIO.output(self.DIR_PIN, GPIO.HIGH)         # Establecer la dirección del motor hacia la derecha
-                for i in range(200):                    # 200->180° y 100->90°
-                    GPIO.output(self.STEP_PIN, GPIO.HIGH)
-                    time.sleep(0.1)                   # Controla la velocidad
-                    GPIO.output(self.STEP_PIN, GPIO.LOW)
-                    time.sleep(0.1)                   # Controla la velocidad
-                    self.aspersar()
-
-                # Gira 180 grados hacia la izquierda
-                GPIO.output(self.DIR_PIN, GPIO.LOW)         # Establecer la dirección del motor hacia la izquierda
-                for i in range(200):                   # 200->180° y 100->90°
-                    GPIO.output(self.STEP_PIN, GPIO.HIGH)
-                    time.sleep(0.1)                  # Controla la velocidad
-                    GPIO.output(self.STEP_PIN, GPIO.LOW)
-                    time.sleep(0.1)                  # Controla la velocidad
-                    self.aspersar()
+            # Gira 180 grados hacia la izquierda
+            GPIO.output(self.DIR_PIN, GPIO.LOW)         # Establecer la dirección del motor hacia la izquierda
+            for i in range(200):                   # 200->180° y 100->90°
+                GPIO.output(self.STEP_PIN, GPIO.HIGH)
+                time.sleep(0.1)                  # Controla la velocidad
+                GPIO.output(self.STEP_PIN, GPIO.LOW)
+                time.sleep(0.1)                  # Controla la velocidad
+                self.aspersar()
+                self.get_logger().info("termina el for")
                          
 
-        except KeyboardInterrupt:
-            pass
+        
 
 
 
