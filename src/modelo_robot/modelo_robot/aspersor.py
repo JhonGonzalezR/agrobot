@@ -1,86 +1,54 @@
-#!/usr/bin/env python3
+import RPi.GPIO as GPIO
 import rclpy
 from rclpy.node import Node
-import RPi.GPIO as GPIO
-import time
-from sensor_msgs.msg import Joy
+from std_msgs.msg import String
 
+class StepperMotorNode(Node):
 
-
-class aspersor(Node): # MODIFY NAME
     def __init__(self):
-        super().__init__("aspersor") # MODIFY NAME
-        self.suscriber_ = self.create_subscription(Joy,"joy",self.callbackJoyPressed,10)
-        self.get_logger().info("Leyendo valores de Joystick")
+        super().__init__('stepper_motor_node')
+        self.publisher_ = self.create_publisher(String, 'stepper_motor_control', 10)
+        self.subscription = self.create_subscription(String, 'stepper_motor_command', self.callback, 10)
+        self.subscription
 
-        self.DIR_PIN = 19  # Pin para la dirección del motor (Dir)
-        self.STEP_PIN = 20  # Pin para el pulso del motor    (STEP)
-        self.bombaPin = 25 # Pin para la bomba
-
-        self.start = 0
-        Joy.buttons
-        
-
-        # Configurar los pines GPIO
         GPIO.setmode(GPIO.BCM)
+        self.DIR_PIN = 19  # Pin para la dirección (DIR)
+        self.STEP_PIN = 20  # Pin para el pulso (STEP)
         GPIO.setup(self.DIR_PIN, GPIO.OUT)
         GPIO.setup(self.STEP_PIN, GPIO.OUT)
-        GPIO.setup(self.bombaPin, GPIO.OUT)
+        self.direction = 1  # 1 para un sentido, -1 para el contrario
 
+    def callback(self, msg):
+        if msg.data == "move_180":
+            self.move_180_degrees()
 
-        
-    def callbackJoyPressed(self,msg):
-        if msg.buttons[2] == 1:
-            self.start += 1
-            self.get_logger().info("Boton presionado")
-        if self.start == 2:
-            self.get_logger().info("Boton presionado pero start es 2")
-            self.start = 0
-        self.rotarMotor()
+    def move_180_degrees(self):
+        steps = 200  # Cantidad de pasos para una rotación completa
+        delay = 0.005  # Ajusta esto para controlar la velocidad del motor
 
+        # Gira 180 grados hacia la izquierda
+        GPIO.output(self.DIR_PIN, -1)  # Cambia la dirección
+        for _ in range(steps):
+            GPIO.output(self.STEP_PIN, GPIO.HIGH)
+            rclpy.sleep(delay)
+            GPIO.output(self.STEP_PIN, GPIO.LOW)
+            rclpy.sleep(delay)
 
-    def aspersar(self):
-        GPIO.output(self.bombaPin, GPIO.HIGH)
-        time.sleep(2)
-        GPIO.output(self.bombaPin, GPIO.LOW)
+        rclpy.sleep(1.0)  # Pausa de 1 segundo
 
-    def rotarMotor(self):
-        
-            
-
-        if self.start == 1:
-            self.get_logger().info("Entra al metodo con start en 1")
-            # Gira 180 grados hacia la derecha
-            GPIO.output(self.DIR_PIN, GPIO.HIGH)         # Establecer la dirección del motor hacia la derecha
-            for i in range(200):                    # 200->180° y 100->90°
-                GPIO.output(self.STEP_PIN, GPIO.HIGH)
-                time.sleep(0.1)                   # Controla la velocidad
-                GPIO.output(self.STEP_PIN, GPIO.LOW)
-                time.sleep(0.1)                   # Controla la velocidad
-                self.aspersar()
-
-            # Gira 180 grados hacia la izquierda
-            GPIO.output(self.DIR_PIN, GPIO.LOW)         # Establecer la dirección del motor hacia la izquierda
-            for i in range(200):                   # 200->180° y 100->90°
-                GPIO.output(self.STEP_PIN, GPIO.HIGH)
-                time.sleep(0.1)                  # Controla la velocidad
-                GPIO.output(self.STEP_PIN, GPIO.LOW)
-                time.sleep(0.1)                  # Controla la velocidad
-                self.aspersar()
-                self.get_logger().info("termina el for")
-                         
-
-        
-
-
-
+        # Gira 180 grados hacia la derecha
+        GPIO.output(self.DIR_PIN, 1)  # Cambia la dirección de nuevo
+        for _ in range(steps):
+            GPIO.output(self.STEP_PIN, GPIO.HIGH)
+            rclpy.sleep(delay)
+            GPIO.output(self.STEP_PIN, GPIO.LOW)
+            rclpy.sleep(delay)
 
 def main(args=None):
     rclpy.init(args=args)
-    node = aspersor() # MODIFY NAME
+    node = StepperMotorNode()
     rclpy.spin(node)
     rclpy.shutdown()
 
-
-if __name__ == "__main__":
+if __name__ == '__main__':
     main()
