@@ -19,25 +19,18 @@ class StepperMotorNode(Node):
         self.direction = 1  # 1 para un sentido, -1 para el contrario
 
     def callback(self, msg):
-        if msg.data == "move_180":
-            self.move_180_degrees()
+        if msg.data == "forward":
+            self.direction = 1
+        elif msg.data == "backward":
+            self.direction = -1
 
-    def move_180_degrees(self):
+        self.move_motor()
+
+    def move_motor(self):
         steps = 200  # Cantidad de pasos para una rotación completa
         delay = 0.005  # Ajusta esto para controlar la velocidad del motor
 
-        # Gira 180 grados hacia la izquierda
-        GPIO.output(self.DIR_PIN, -1)  # Cambia la dirección
-        for _ in range(steps):
-            GPIO.output(self.STEP_PIN, GPIO.HIGH)
-            rclpy.sleep(delay)
-            GPIO.output(self.STEP_PIN, GPIO.LOW)
-            rclpy.sleep(delay)
-
-        rclpy.sleep(1.0)  # Pausa de 1 segundo
-
-        # Gira 180 grados hacia la derecha
-        GPIO.output(self.DIR_PIN, 1)  # Cambia la dirección de nuevo
+        GPIO.output(self.DIR_PIN, self.direction)
         for _ in range(steps):
             GPIO.output(self.STEP_PIN, GPIO.HIGH)
             rclpy.sleep(delay)
