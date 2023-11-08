@@ -39,7 +39,7 @@ def generate_launch_description():
     # Get URDF via xacro
     # Process the URDF file
     pkg_path = os.path.join(get_package_share_directory('modelo_robot'))
-    xacro_file = os.path.join(pkg_path,'urdf','robot_real.urdf.xacro')
+    xacro_file = os.path.join(pkg_path,'urdf','robot2.urdf.xacro')
     # robot_description_config = xacro.process_file(xacro_file).toxml()
     robot_description_config = Command(['xacro ', xacro_file, ' use_ros2_control:=', use_ros2_control, ' sim_mode:=', use_sim_time])
 
@@ -61,7 +61,7 @@ def generate_launch_description():
         name='joint_state_publisher',
     )
 
-    controller_params_file = os.path.join(get_package_share_directory(package_name),'config','my_controllers1.yaml')
+    controller_params_file = os.path.join(get_package_share_directory(package_name),'config','my_controllersArticu.yaml')
 
     controller_manager = Node(
         package="controller_manager",
