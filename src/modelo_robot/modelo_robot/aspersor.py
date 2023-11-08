@@ -2,6 +2,7 @@ import RPi.GPIO as GPIO
 import rclpy
 from rclpy.node import Node
 from std_msgs.msg import String
+import time
 
 class StepperMotorNode(Node):
 
@@ -27,15 +28,15 @@ class StepperMotorNode(Node):
         self.move_motor()
 
     def move_motor(self):
-        steps = 200  # Cantidad de pasos para una rotación completa
-        delay = 0.005  # Ajusta esto para controlar la velocidad del motor
+        steps = 200
+        delay = 0.005
 
         GPIO.output(self.DIR_PIN, self.direction)
         for _ in range(steps):
             GPIO.output(self.STEP_PIN, GPIO.HIGH)
-            rclpy.sleep(delay)
+            time.sleep(delay)  # Utiliza time.sleep() en lugar de rclpy.sleep()
             GPIO.output(self.STEP_PIN, GPIO.LOW)
-            rclpy.sleep(delay)
+            time.sleep(delay)  # Utiliza time.sleep() en lugar de rclpy.sleep()
 
 def main(args=None):
     rclpy.init(args=args)
