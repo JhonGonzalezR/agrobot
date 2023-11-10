@@ -1,13 +1,13 @@
 import RPi.GPIO as GPIO
 import rclpy
 from rclpy.node import Node
-from sensor_msgs.msg import Joy
+from example_interfaces.msg import Int64
 import time
 
 class aspersor(Node): # MODIFY NAME
     def __init__(self):
         super().__init__("aspersor") # MODIFY NAME
-        self.suscriber_ = self.create_subscription(Joy,"joy",self.callbackJoyPressed,10)
+        self.suscriber_ = self.create_subscription(Int64,"activation",self.activate,10)
         self.get_logger().info("Leyendo valores de Joystick")
 
         # Define las conexiones del motor paso a paso y pasos por revolución:
@@ -24,9 +24,12 @@ class aspersor(Node): # MODIFY NAME
 
 
 
-    def callbackJoyPressed(self,msg):
-        if msg.buttons[2] == 1:
+    def activate(self,msg):
+        if msg.data == 1:
+            self.get_logger().info("Rotando")
             self.rotar()
+        else:
+            self.get_logger().info("Rotación detenida")
         
 
 
