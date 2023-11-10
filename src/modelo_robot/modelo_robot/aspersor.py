@@ -50,12 +50,12 @@ class aspersor(Node): # MODIFY NAME
         try:
         
             # Gira el motor 5 revoluciones rápidamente en sentido horario
-            self.step_motor(GPIO.HIGH, 1 * self.stepsPerRevolution, 100000)
+            self.step_motor(GPIO.HIGH, 0.5 * self.stepsPerRevolution, 10000)
             self.aspersar()
             time.sleep(1)
 
             # Gira el motor 5 revoluciones rápidamente en sentido antihorario
-            self.step_motor(GPIO.LOW, 1 * self.stepsPerRevolution, 100000)
+            self.step_motor(GPIO.LOW, 0.5 * self.stepsPerRevolution, 10000)
             self.aspersar()
             time.sleep(1)
 
