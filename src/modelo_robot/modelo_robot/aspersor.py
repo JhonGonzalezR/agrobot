@@ -13,7 +13,7 @@ class aspersor(Node): # MODIFY NAME
         # Define las conexiones del motor paso a paso y pasos por revolución:
         self.dirPin = 2  # Puedes ajustar los números de los pines según tu configuración
         self.stepPin = 3
-        self.stepsPerRevolution = 100
+        self.stepsPerRevolution = 80
         self.bombaPin = 4 # Pin para la bomba
 
         # Configura la biblioteca RPi.GPIO
