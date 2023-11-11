@@ -11,10 +11,10 @@ class aspersor(Node): # MODIFY NAME
         self.get_logger().info("Leyendo valores de Joystick")
 
         # Define las conexiones del motor paso a paso y pasos por revolución:
-        self.dirPin = 27  # Puedes ajustar los números de los pines según tu configuración
-        self.stepPin = 22
+        self.dirPin = 5  # Puedes ajustar los números de los pines según tu configuración
+        self.stepPin = 6
         self.stepsPerRevolution = 100
-        self.bombaPin = 25 # Pin para la bomba
+        self.bombaPin = 26 # Pin para la bomba
 
         # Configura la biblioteca RPi.GPIO
         GPIO.setmode(GPIO.BCM)
