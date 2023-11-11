@@ -30,6 +30,7 @@ setup(
         'console_scripts': ["pos_ctrl=modelo_robot.position_ctrl:main",
         "aspersor=modelo_robot.aspersor:main",
         "activator=modelo_robot.joy_activator:main",
+        "aspersar=modelo_robot.aspersor_no:main"
         ],
     },
 )
