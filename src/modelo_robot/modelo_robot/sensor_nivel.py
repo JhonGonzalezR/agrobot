@@ -39,9 +39,9 @@ class UltrasonicSensorNode(Node):
         GPIO.setup(self.led3_pin, GPIO.OUT)
 
         # Inicialización de nodos de LEDControl
-        self.led1 = LEDControl(self.led1_pin, 0, 50)  # LED1 se enciende a menos de 50 cm
-        self.led2 = LEDControl(self.led2_pin, 51, 100)  # LED2 se enciende entre 51 cm y 100 cm
-        self.led3 = LEDControl(self.led3_pin, 101, float('inf'))  # LED3 se enciende entre 101 cm y inf cm
+        self.led1 = LEDControl(self.led1_pin, 0, 30)  # LED1 se enciende a menos de 50 cm
+        self.led2 = LEDControl(self.led2_pin, 31, 60)  # LED2 se enciende entre 51 cm y 100 cm
+        self.led3 = LEDControl(self.led3_pin, 61, float('inf'))  # LED3 se enciende entre 101 cm y inf cm
 
         # Publicador para el rango medido
         self.publisher_ = self.create_publisher(Range, 'ultrasonic_range', 10)
