@@ -61,6 +61,14 @@ def generate_launch_description():
         name='joint_state_publisher',
     )
 
+    twist_mux_params = os.path.join(get_package_share_directory(package_name),'config','twist_mux.yaml')
+    twist_mux = Node(
+            package="twist_mux",
+            executable="twist_mux",
+            parameters=[twist_mux_params],
+            remappings=[('/cmd_vel_out','/diff_drive_controller/cmd_vel_unstamped')]
+        )
+
     controller_params_file = os.path.join(get_package_share_directory(package_name),'config','my_controllers1.yaml')
 
     controller_manager = Node(
@@ -101,7 +109,8 @@ def generate_launch_description():
     
      
     return LaunchDescription([
-    declare_use_sim_time_cmd,   
+    declare_use_sim_time_cmd,
+    twist_mux,   
     declare_use_ros2_control_cmd,
     #declare_rviz_config_file_cmd,
     node_robot_state_publisher,
