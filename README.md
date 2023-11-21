@@ -2,6 +2,11 @@
 Agrobot is a university robotics proyect which aims to develop a mobile robot which could be able to fumigate automonously among urban crops like gardens, terraces, or places surrounded by people or dinamics obstacles.
 
 This was develop in Ubuntu 22.04 and ROS2 Humble placed in a Raspberry 3b +, the robot can be visualized in Gazebo in order to check the its funtionalities.
+## How to use
+1. Clone this repository.
+2. Use rosdep to add dependencies (Recommended).
+3. Compile this repository into the Agrobot file using colcon build
+## Gallery
 
 ![284687467-ec4729f4-2dd5-413d-ae34-25db550b0fe3](https://github.com/JhonGonzalezR/agrobot/assets/98565218/dd42113d-df7e-42c4-8a8e-00ee5062a170)
   ![284681730-85fd8db0-c378-4ee1-90e5-1b58a0702a7f](https://github.com/JhonGonzalezR/agrobot/assets/98565218/5c51653b-9ec4-4111-9933-504be2316f00)
@@ -10,8 +15,8 @@ This was develop in Ubuntu 22.04 and ROS2 Humble placed in a Raspberry 3b +, the
 ![WhatsApp Image 2023-11-21 at 2 02 25 PM](https://github.com/JhonGonzalezR/agrobot/assets/98565218/5d2821c2-d5ff-40f2-8e92-c6f720fab695)
 
 
-
 Final presentation Video: https://www.youtube.com/watch?v=J-MS1OLhlBo 
+## Awards
 
 ![WhatsApp Image 2023-11-15 at 12 22 43 PM (1)](https://github.com/JhonGonzalezR/agrobot/assets/98565218/481400e2-7997-41b7-9da7-44ae1f30d594)
 
