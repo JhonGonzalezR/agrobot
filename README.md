@@ -4,7 +4,8 @@ Agrobot is a university robotics proyect which aims to develop a mobile robot wh
 This was develop in Ubuntu 22.04 and ROS2 Humble placed in a Raspberry 3b +, the robot can be visualized in Gazebo in order to check the its funtionalities.
 
 ![284687467-ec4729f4-2dd5-413d-ae34-25db550b0fe3](https://github.com/JhonGonzalezR/agrobot/assets/98565218/dd42113d-df7e-42c4-8a8e-00ee5062a170)
-   ![image](https://github.com/JhonGonzalezR/agrobot/assets/98565218/85fd8db0-c378-4ee1-90e5-1b58a0702a7f)   ![284689246-ab7cbb17-4964-4398-bd51-842ba5abb7cc](https://github.com/JhonGonzalezR/agrobot/assets/98565218/ada68302-f7cf-4e22-bb63-df6afb706b83)
+  ![284681730-85fd8db0-c378-4ee1-90e5-1b58a0702a7f](https://github.com/JhonGonzalezR/agrobot/assets/98565218/5c51653b-9ec4-4111-9933-504be2316f00)
+    ![284689246-ab7cbb17-4964-4398-bd51-842ba5abb7cc](https://github.com/JhonGonzalezR/agrobot/assets/98565218/ada68302-f7cf-4e22-bb63-df6afb706b83)
 
 ![WhatsApp Image 2023-11-21 at 2 02 25 PM](https://github.com/JhonGonzalezR/agrobot/assets/98565218/5d2821c2-d5ff-40f2-8e92-c6f720fab695)
 
